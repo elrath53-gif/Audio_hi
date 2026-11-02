@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Ecualizador Studio</title>
+    <meta name="description" content="Aplicación web progresiva (PWA) de ecualizador de audio instalable en dispositivos móviles y escritorio." />
+    <meta property="og:title" content="Ecualizador Studio" />
+    <meta property="og:description" content="Aplicación web progresiva (PWA) de ecualizador de audio instalable en dispositivos móviles y escritorio." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#05030F" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Master HiRes" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icons/icon-180.png?v=master1" />
+    <link rel="icon" type="image/png" href="/icons/icon-192.png?v=master1" />
+  </head>
+  <body data-tab="music">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        var refreshing = false;
+        function reloadOnce() {
+          if (refreshing) return;
+          refreshing = true;
+          window.location.reload();
+        }
+        navigator.serviceWorker.addEventListener('controllerchange', reloadOnce);
+        navigator.serviceWorker.addEventListener('message', function (e) {
+          if (e.data && e.data.type === 'ESTUDIO_EQ_SW_PURGED') reloadOnce();
+        });
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(function (reg) {
+            reg.update().catch(function () {});
+          }).catch(function () {});
+        });
+      }
+    </script>
+  </body>
+</html>
